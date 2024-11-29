@@ -7,10 +7,10 @@
         "responses": {},
         "schemas": {
             "UUID": {
-                "type": "string",
-                "description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)"
+                "type": "string"
             },
             "User": {
+                "description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
                 "properties": {
                     "id": {
                         "$ref": "#/components/schemas/UUID"
@@ -37,12 +37,58 @@
                 },
                 "required": [
                     "id",
-                    "email",
                     "name",
                     "phoneNumbers"
                 ],
                 "type": "object",
                 "additionalProperties": false
+            },
+            "ValidateErrorJSON": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "enum": [
+                            "Validation failed"
+                        ],
+                        "nullable": false
+                    },
+                    "details": {
+                        "properties": {},
+                        "additionalProperties": {},
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "message",
+                    "details"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Pick_User.email-or-name-or-phoneNumbers_": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "phoneNumbers": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "name",
+                    "phoneNumbers"
+                ],
+                "type": "object",
+                "description": "From T, pick a set of properties whose keys are in the union K"
+            },
+            "UserCreationParams": {
+                "$ref": "#/components/schemas/Pick_User.email-or-name-or-phoneNumbers_"
             }
         },
         "securitySchemes": {}
@@ -70,25 +116,33 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/User"
+                                },
+                                "examples": {
+                                    "Example 1": {
+                                        "value": {
+                                            "id": "52907745-7672-470e-a803-a2f8feb52944",
+                                            "name": "tsoa user",
+                                            "email": "hello@tsoa.com",
+                                            "phoneNumbers": [],
+                                            "status": "Happy"
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 },
-                "description": "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details.",
                 "security": [],
                 "parameters": [
                     {
-                        "description": "The user's identifier",
                         "in": "path",
                         "name": "userId",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/UUID"
                         }
                     },
                     {
-                        "description": "Provide a username to display",
                         "in": "query",
                         "name": "name",
                         "required": false,
@@ -97,6 +151,51 @@
                         }
                     }
                 ]
+            }
+        },
+        "/users": {
+            "post": {
+                "operationId": "CreateUser",
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidateErrorJSON"
+                                },
+                                "examples": {
+                                    "Example 1": {
+                                        "value": {
+                                            "message": "Validation failed",
+                                            "details": {
+                                                "requestBody": {
+                                                    "message": "id is an excess property and therefore not allowed",
+                                                    "value": "52907745-7672-470e-a803-a2f8feb52944"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreationParams"
+                            }
+                        }
+                    }
+                }
             }
         }
     },

@@ -11,8 +11,8 @@ import {
   Body,
  Example
 } from "tsoa";
-import { User } from "./user";
-import { UserCreationParams, UsersService,  } from "./usersService";
+import { User } from "../users/user";
+import { UserCreationParams, UsersService,  } from "../services/usersService";
 // import { UUID } from "crypto";
 
 interface ValidateErrorJSON {

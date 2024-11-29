@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 // src/users/usersController.ts
 const tsoa_1 = require("tsoa");
-const usersService_1 = require("./usersService");
+const usersService_1 = require("../services/usersService");
 let UsersController = class UsersController extends tsoa_1.Controller {
     getUser(userId, name) {
         return __awaiter(this, void 0, void 0, function* () {

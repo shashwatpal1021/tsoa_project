@@ -3,6 +3,8 @@ import express, {
   Response as ExResponse,
   Request as ExRequest,
   NextFunction,
+  urlencoded,
+  json,
 } from "express";
 import { ValidateError } from "tsoa";
 import swaggerUi from "swagger-ui-express";
@@ -11,12 +13,12 @@ import { RegisterRoutes } from "../build/routes";
 export const app = express();
 
 // Use body parser to read sent json payloads
-// app.use(
-//   urlencoded({
-//     extended: true,
-//   })
-// );
-// app.use(json());
+app.use(
+  urlencoded({
+    extended: true,
+  })
+);
+app.use(json());
 
 app.use("/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
   return res.send(

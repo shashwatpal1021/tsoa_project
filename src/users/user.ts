@@ -5,7 +5,7 @@
  * every user in the system regardless of status and role.
  */
 
-import { UUID } from "./usersController";
+import { UUID } from "../controllers/usersController";
 
 // import { UUID } from "crypto";
 

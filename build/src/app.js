@@ -37,18 +37,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 // src/app.ts
-const express_1 = __importDefault(require("express"));
+const express_1 = __importStar(require("express"));
 const tsoa_1 = require("tsoa");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const routes_1 = require("../build/routes");
 exports.app = (0, express_1.default)();
 // Use body parser to read sent json payloads
-// app.use(
-//   urlencoded({
-//     extended: true,
-//   })
-// );
-// app.use(json());
+exports.app.use((0, express_1.urlencoded)({
+    extended: true,
+}));
+exports.app.use((0, express_1.json)());
 exports.app.use("/docs", swagger_ui_express_1.default.serve, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));
